@@ -1,4 +1,4 @@
-import os
+﻿import os
 import streamlit as st
 import time
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -20,7 +20,7 @@ if not google_api_key:
     except Exception:
         pass
 
-st.title("RockyBot: News Research Tool 📈")
+st.title("RockyBot: News Research Tool ðŸ“ˆ")
 st.sidebar.title("News Article URLs")
 
 urls = []
@@ -31,7 +31,7 @@ for i in range(3):
 process_url_clicked = st.sidebar.button("Process URLs")
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
+    model="gemini-3.5-flash-lite",
     google_api_key=google_api_key,
 )
 
@@ -49,22 +49,22 @@ if process_url_clicked:
         st.sidebar.error("Please enter at least one URL.")
     else:
         try:
-            main_placeholder.text("Data Loading...Started...✅✅✅")
+            main_placeholder.text("Data Loading...Started...âœ…âœ…âœ…")
             loader = WebBaseLoader(valid_urls)
             data = loader.load()
 
-            main_placeholder.text("Text Splitting...Started...✅✅✅")
+            main_placeholder.text("Text Splitting...Started...âœ…âœ…âœ…")
             text_splitter = RecursiveCharacterTextSplitter(
                 separators=['\n\n', '\n', '.', ','],
                 chunk_size=1000
             )
             docs = text_splitter.split_documents(data)
 
-            main_placeholder.text("Building Embedding Vectors...✅✅✅")
+            main_placeholder.text("Building Embedding Vectors...âœ…âœ…âœ…")
             vectorstore = FAISS.from_documents(docs, embeddings)
             st.session_state.vectorstore = vectorstore
             time.sleep(1)
-            main_placeholder.success("Processing Complete! You can now ask questions ✅")
+            main_placeholder.success("Processing Complete! You can now ask questions âœ…")
         except Exception as e:
             main_placeholder.error(f"Error processing URLs: {e}")
 
@@ -101,7 +101,7 @@ Answer:""")
                 st.write(answer)
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                    st.error("⚠️ Rate limit reached. Please wait a minute and try again, or come back tomorrow for the free tier reset.")
+                    st.error("âš ï¸ Rate limit reached. Please wait a minute and try again, or come back tomorrow for the free tier reset.")
                 else:
                     st.error(f"Error: {e}")
 
