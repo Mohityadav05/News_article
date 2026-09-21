@@ -1,4 +1,4 @@
-﻿import os
+import os
 import streamlit as st
 import time
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -31,7 +31,7 @@ for i in range(3):
 process_url_clicked = st.sidebar.button("Process URLs")
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-3.6-flash",
+    model="gemini-2.5-flash-lite",
     google_api_key=google_api_key,
 )
 
@@ -95,10 +95,15 @@ Answer:""")
         chain = prompt | llm | StrOutputParser()
 
         with st.spinner("Thinking..."):
-            answer = chain.invoke({"context": context, "question": query})
-
-        st.header("Answer")
-        st.write(answer)
+            try:
+                answer = chain.invoke({"context": context, "question": query})
+                st.header("Answer")
+                st.write(answer)
+            except Exception as e:
+                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                    st.error("⚠️ Rate limit reached. Please wait a minute and try again, or come back tomorrow for the free tier reset.")
+                else:
+                    st.error(f"Error: {e}")
 
         if sources:
             st.subheader("Sources:")
